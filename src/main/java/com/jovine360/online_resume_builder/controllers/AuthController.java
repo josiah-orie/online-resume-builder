@@ -24,7 +24,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     public String welcome() {
         return "redirect:/login";
     }

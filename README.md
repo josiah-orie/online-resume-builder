@@ -112,7 +112,7 @@ Clean, minimalist approach with ample white space and subtle styling for modern 
    ```
 
 4. **Access Application**
-   - Open your browser to `http://localhost:8080`
+   - Open your browser to `http://localhost:8181`
    - Register a new account or login
    - Start building your resume!
 

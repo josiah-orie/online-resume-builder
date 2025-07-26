@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/resumes")
@@ -199,8 +200,30 @@ public class ResumeController {
     @GetMapping("/templates")
     @PreAuthorize("isAuthenticated()")
     public String viewTemplates(Model model) {
-        // Add a list of available templates
-        List<String> templates = List.of("default", "modern", "professional", "creative", "minimal");
+        // Create template information with descriptions and features
+        List<TemplateInfo> templates = Arrays.asList(
+            new TemplateInfo("default", "Default Template", 
+                "Clean and professional layout suitable for most industries", 
+                Arrays.asList("Two-column layout", "Professional typography", "Skill tags", "Project showcase"),
+                "#4a6bff", "bi-file-earmark-text"),
+            new TemplateInfo("modern", "Modern Template", 
+                "Contemporary design with gradients and timeline styling", 
+                Arrays.asList("Gradient headers", "Timeline experience", "Modern color palette", "Clean sections"),
+                "#6c5ce7", "bi-lightning"),
+            new TemplateInfo("professional", "Professional Template", 
+                "Traditional and formal design ideal for corporate positions", 
+                Arrays.asList("Serif typography", "Classic layout", "Formal styling", "Executive appearance"),
+                "#2d3436", "bi-briefcase"),
+            new TemplateInfo("creative", "Creative Template", 
+                "Vibrant sidebar design perfect for creative professionals", 
+                Arrays.asList("Colorful sidebar", "Skill visualization", "Creative fonts", "Dynamic layout"),
+                "#fd79a8", "bi-palette"),
+            new TemplateInfo("minimal", "Minimal Template", 
+                "Clean minimalist approach with subtle styling", 
+                Arrays.asList("Minimalist design", "Ample white space", "Clean typography", "Subtle accents"),
+                "#74b9ff", "bi-circle")
+        );
+        
         model.addAttribute("templates", templates);
         return "resumes/templates";
     }
@@ -225,5 +248,79 @@ public class ResumeController {
         model.addAttribute("resume", resume);
         
         return "resumes/share";
+    }
+
+    @GetMapping("/preview/{templateId}")
+    @PreAuthorize("isAuthenticated()")
+    public String previewTemplate(@PathVariable String templateId, Model model, Authentication authentication) {
+        // Create sample resume data for preview
+        Resume sampleResume = createSampleResume(templateId, authentication.getName());
+        
+        model.addAttribute("resume", sampleResume);
+        model.addAttribute("templateId", templateId);
+        model.addAttribute("isPreview", true);
+        
+        return "resumes/preview";
+    }
+
+    private Resume createSampleResume(String templateId, String username) {
+        Resume resume = new Resume();
+        
+        // Set sample data based on template
+        switch (templateId.toLowerCase()) {
+            case "default":
+                resume.setTitle("John Developer - Full Stack Developer");
+                resume.setSummary("Experienced software developer with 5+ years in full-stack development, specializing in Java, Spring Boot, and React.");
+                break;
+            case "modern":
+                resume.setTitle("Jane Modern - UI/UX Designer");
+                resume.setSummary("Creative UI/UX designer passionate about creating intuitive and beautiful digital experiences.");
+                break;
+            case "professional":
+                resume.setTitle("Robert Executive - Senior Project Manager");
+                resume.setSummary("Strategic project manager with 10+ years of experience leading cross-functional teams in enterprise environments.");
+                break;
+            case "creative":
+                resume.setTitle("Alex Creative - Graphic Designer");
+                resume.setSummary("Innovative graphic designer with expertise in branding, digital design, and creative storytelling.");
+                break;
+            case "minimal":
+                resume.setTitle("Sarah Minimal - Product Manager");
+                resume.setSummary("Results-driven product manager focused on user-centered design and data-driven decision making.");
+                break;
+            default:
+                resume.setTitle("Sample Resume - Your Title Here");
+                resume.setSummary("This is a sample resume to demonstrate the template design.");
+        }
+        
+        // Add sample data (you can expand this as needed)
+        return resume;
+    }
+
+    // Inner class for template information
+    public static class TemplateInfo {
+        private String id;
+        private String name;
+        private String description;
+        private List<String> features;
+        private String primaryColor;
+        private String icon;
+        
+        public TemplateInfo(String id, String name, String description, List<String> features, String primaryColor, String icon) {
+            this.id = id;
+            this.name = name;
+            this.description = description;
+            this.features = features;
+            this.primaryColor = primaryColor;
+            this.icon = icon;
+        }
+        
+        // Getters
+        public String getId() { return id; }
+        public String getName() { return name; }
+        public String getDescription() { return description; }
+        public List<String> getFeatures() { return features; }
+        public String getPrimaryColor() { return primaryColor; }
+        public String getIcon() { return icon; }
     }
 }
