@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${resume.title} + ' - Resume'">Professional Resume Template</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.5;
+            font-size: 12px;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1a3c5a;
+        }
+        .resume-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1a3c5a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .contact-info {
+            font-size: 14px;
+            color: #555;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1a3c5a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #1a3c5a;
+            padding-bottom: 5px;
+        }
+        .summary {
+            font-style: normal;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        .experience-item, .education-item, .project-item {
+            margin-bottom: 20px;
+        }
+        .item-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .item-subtitle {
+            font-style: italic;
+            margin-bottom: 3px;
+        }
+        .item-date {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .item-description {
+            margin-top: 5px;
+            text-align: justify;
+        }
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .skill-item {
+            width: 45%;
+            margin-right: 5%;
+            margin-bottom: 10px;
+        }
+        .certification-item, .language-item, .hobby-item {
+            margin-bottom: 10px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 30px;
+            border-top: 1px solid #1a3c5a;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="resume-title" th:text="${resume.title}">EXECUTIVE RESUME</h1>
+            <div class="contact-info" th:if="${resume.user != null}">
+                <span th:text="${resume.user.fullName}">Robert Johnson</span> | 
+                <span th:text="${resume.user.email}">robert.johnson@example.com</span>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="section" th:if="${resume.summary != null && !resume.summary.isEmpty()}">
+            <h2 class="section-title">Professional Summary</h2>
+            <div class="summary" th:text="${resume.summary}">
+                Accomplished executive with extensive experience in strategic planning, business development, and operational excellence. Proven track record of leading high-performing teams and delivering exceptional results across multiple industries.
+            </div>
+        </div>
+        
+        <!-- Experience Section -->
+        <div class="section" th:if="${!resume.experiences.isEmpty()}">
+            <h2 class="section-title">Professional Experience</h2>
+            <div class="experience-item" th:each="exp : ${resume.experiences}">
+                <div class="item-title" th:text="${exp.jobTitle}">Chief Technology Officer</div>
+                <div class="item-subtitle" th:text="${exp.company}">Enterprise Solutions Corporation</div>
+                <div class="item-date">
+                    <span th:text="${#temporals.format(exp.startDate, 'MMMM yyyy')}">January 2018</span> - 
+                    <span th:if="${exp.currentlyWorking}">Present</span>
+                    <span th:unless="${exp.currentlyWorking}" th:text="${#temporals.format(exp.endDate, 'MMMM yyyy')}">December 2022</span>
+                </div>
+                <div class="item-description" th:text="${exp.description}">
+                    Led the digital transformation initiative, resulting in a 35% increase in operational efficiency and a $4.5M reduction in annual costs. Established the company's technology roadmap and oversaw implementation of enterprise-wide solutions. Managed a team of 75 IT professionals across multiple global locations.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Education Section -->
+        <div class="section" th:if="${!resume.educations.isEmpty()}">
+            <h2 class="section-title">Education</h2>
+            <div class="education-item" th:each="edu : ${resume.educations}">
+                <div class="item-title" th:text="${edu.degree}">Master of Business Administration</div>
+                <div class="item-subtitle" th:text="${edu.institution}">Harvard Business School</div>
+                <div class="item-date">
+                    <span th:text="${#temporals.format(edu.startDate, 'yyyy')}">2010</span> - 
+                    <span th:text="${#temporals.format(edu.endDate, 'yyyy')}">2012</span>
+                </div>
+                <div class="item-description" th:if="${edu.description != null}" th:text="${edu.description}">
+                    Graduated with high distinction. Specialized in Leadership and Strategic Management.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Skills Section -->
+        <div class="section" th:if="${!resume.skills.isEmpty()}">
+            <h2 class="section-title">Core Competencies</h2>
+            <div class="skills-container">
+                <div class="skill-item" th:each="skill : ${resume.skills}">
+                    • <span th:text="${skill.name}">Strategic Planning</span>
+                    <span th:if="${skill.level != null}"> - </span>
+                    <span th:if="${skill.level != null}" th:text="${skill.level}">Expert</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Certifications Section -->
+        <div class="section" th:if="${!resume.certifications.isEmpty()}">
+            <h2 class="section-title">Certifications</h2>
+            <div class="certification-item" th:each="cert : ${resume.certifications}">
+                <div class="item-title" th:text="${cert.name}">Project Management Professional (PMP)</div>
+                <div class="item-subtitle" th:text="${cert.issuingOrganization}">Project Management Institute</div>
+                <div class="item-date" th:if="${cert.issueDate != null}">
+                    <span th:text="${#temporals.format(cert.issueDate, 'MMMM yyyy')}">March 2015</span>
+                    <span th:if="${cert.expiryDate != null}"> - <span th:text="${#temporals.format(cert.expiryDate, 'MMMM yyyy')}">March 2024</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Languages Section -->
+        <div class="section" th:if="${!resume.languages.isEmpty()}">
+            <h2 class="section-title">Languages</h2>
+            <div class="language-item" th:each="lang : ${resume.languages}">
+                <span class="item-title" th:text="${lang.name}">English</span> - 
+                <span th:text="${lang.proficiencyLevel}">Native</span>
+            </div>
+        </div>
+        
+        <!-- Hobbies Section -->
+        <div class="section" th:if="${!resume.hobbies.isEmpty()}">
+            <h2 class="section-title">Professional Interests</h2>
+            <div class="hobby-item" th:each="hobby : ${resume.hobbies}">
+                <span class="item-title" th:text="${hobby.name}">Business Literature</span>
+                <span th:if="${hobby.description != null}"> - </span>
+                <span th:if="${hobby.description != null}" th:text="${hobby.description}">Reading and analyzing contemporary business strategy books</span>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>References available upon request</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${resume.title} + ' - Resume'">Creative Resume Template</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        /* Font declarations with fallbacks */
+        @font-face {
+            font-family: 'OpenSans';
+            src: url('fonts/OpenSans-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('fonts/Montserrat-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Poppins';
+            src: url('fonts/Poppins-Light.ttf') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+        }
+        
+        body {
+            font-family: 'OpenSans', 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 12px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            display: flex;
+            max-width: 100%;
+        }
+        .sidebar {
+            width: 32%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            padding: 30px 20px;
+            min-height: 297mm;
+        }
+        .main-content {
+            width: 68%;
+            padding: 30px 25px;
+            background-color: white;
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+        }
+        .sidebar-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+            letter-spacing: 1px;
+        }
+        .sidebar-title {
+            font-size: 16px;
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-family: 'Poppins', 'Helvetica', sans-serif;
+            font-weight: 300;
+        }
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        .sidebar-section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-bottom: 8px;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+        }
+        .sidebar-section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: white;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+        }
+        .contact-icon {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .skill-item {
+            margin-bottom: 15px;
+        }
+        .skill-name {
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+        }
+        .skill-bar {
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        .skill-level {
+            height: 100%;
+            background-color: white;
+            border-radius: 3px;
+        }
+        .resume-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ff6b6b;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+            letter-spacing: 1px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ff6b6b;
+            position: relative;
+            padding-bottom: 8px;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+            letter-spacing: 0.5px;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #ff6b6b;
+        }
+        .summary {
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.7;
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+        }
+        .experience-item, .education-item, .project-item {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 2px solid #ff6b6b;
+            position: relative;
+        }
+        .item-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+        }
+        .item-subtitle {
+            color: #ff6b6b;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+        }
+        .item-date {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-bottom: 8px;
+            font-family: 'Poppins', 'Helvetica', sans-serif;
+            font-weight: 300;
+        }
+        .item-description {
+            margin-top: 5px;
+            line-height: 1.6;
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+        }
+        .hobby-item {
+            display: inline-block;
+            background-color: #f1f1f1;
+            color: #ff6b6b;
+            border-radius: 20px;
+            padding: 6px 15px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', 'Helvetica', sans-serif;
+            font-weight: 300;
+        }
+        
+        /* Enhanced typography for creative template */
+        .creative-accent {
+            font-family: 'Poppins', 'Helvetica', sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        .creative-heading {
+            font-family: 'Montserrat', 'Helvetica', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .creative-body {
+            font-family: 'OpenSans', 'Helvetica', sans-serif;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Section -->
+        <div class="sidebar">
+            <div class="profile-image" th:if="${resume.user != null}" th:text="${resume.user.fullName.substring(0,1)}">J</div>
+            <div class="sidebar-name" th:if="${resume.user != null}" th:text="${resume.user.fullName}">Jessica Creative</div>
+            <div class="sidebar-title" th:text="${resume.title}">Creative Designer & Developer</div>
+            
+            <!-- Contact Section -->
+            <div class="sidebar-section">
+                <h2 class="sidebar-section-title">Contact</h2>
+                <div class="contact-item" th:if="${resume.user != null}">
+                    <span class="contact-icon">@</span>
+                    <span th:text="${resume.user.email}">jessica@creative.com</span>
+                </div>
+            </div>
+            
+            <!-- Skills Section -->
+            <div class="sidebar-section" th:if="${!resume.skills.isEmpty()}">
+                <h2 class="sidebar-section-title">Skills</h2>
+                <div class="skill-item" th:each="skill : ${resume.skills}">
+                    <div class="skill-name" th:text="${skill.name}">UX/UI Design</div>
+                    <div class="skill-bar">
+                        <div class="skill-level" th:style="${skill.level != null && skill.level == 'Beginner'} ? 'width: 20%' : 
+                                               ${skill.level != null && skill.level == 'Intermediate'} ? 'width: 40%' : 
+                                               ${skill.level != null && skill.level == 'Advanced'} ? 'width: 60%' : 
+                                               ${skill.level != null && skill.level == 'Expert'} ? 'width: 80%' : 
+                                               ${skill.level != null && skill.level == 'Master'} ? 'width: 100%' : 'width: 50%'"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Languages Section -->
+            <div class="sidebar-section" th:if="${!resume.languages.isEmpty()}">
+                <h2 class="sidebar-section-title">Languages</h2>
+                <div class="skill-item" th:each="lang : ${resume.languages}">
+                    <div class="skill-name creative-accent">
+                        <span th:text="${lang.name}">English</span> - 
+                        <span th:text="${lang.proficiencyLevel}">Fluent</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hobbies Section -->
+            <div class="sidebar-section" th:if="${!resume.hobbies.isEmpty()}">
+                <h2 class="sidebar-section-title">Interests</h2>
+                <div th:each="hobby : ${resume.hobbies}" class="hobby-item">
+                    <span th:text="${hobby.name}">Photography</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Section -->
+        <div class="main-content">
+            <!-- Summary Section -->
+            <div class="section" th:if="${resume.summary != null && !resume.summary.isEmpty()}">
+                <h2 class="section-title">About Me</h2>
+                <div class="summary creative-body" th:text="${resume.summary}">
+                    Creative professional with a unique blend of design thinking and technical skills. Passionate about crafting engaging digital experiences that solve real user problems with innovative approaches.
+                </div>
+            </div>
+            
+            <!-- Experience Section -->
+            <div class="section" th:if="${!resume.experiences.isEmpty()}">
+                <h2 class="section-title">Experience</h2>
+                <div class="experience-item" th:each="exp : ${resume.experiences}">
+                    <div class="item-title creative-heading" th:text="${exp.jobTitle}">Senior UX/UI Designer</div>
+                    <div class="item-subtitle" th:text="${exp.company}">Creative Digital Agency</div>
+                    <div class="item-date creative-accent">
+                        <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2021</span> - 
+                        <span th:if="${exp.currentlyWorking}">Present</span>
+                        <span th:unless="${exp.currentlyWorking}" th:text="${#temporals.format(exp.endDate, 'MMM yyyy')}">Dec 2022</span>
+                    </div>
+                    <div class="item-description creative-body" th:text="${exp.description}">
+                        Led the redesign of multiple client websites and applications, increasing user engagement by 45% and conversion rates by 25%. Collaborated with cross-functional teams to implement innovative design solutions.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Education Section -->
+            <div class="section" th:if="${!resume.educations.isEmpty()}">
+                <h2 class="section-title">Education</h2>
+                <div class="education-item" th:each="edu : ${resume.educations}">
+                    <div class="item-title creative-heading" th:text="${edu.degree}">Bachelor of Fine Arts in Graphic Design</div>
+                    <div class="item-subtitle" th:text="${edu.institution}">Design Institute</div>
+                    <div class="item-date creative-accent">
+                        <span th:text="${#temporals.format(edu.startDate, 'yyyy')}">2016</span> - 
+                        <span th:text="${#temporals.format(edu.endDate, 'yyyy')}">2020</span>
+                    </div>
+                    <div class="item-description creative-body" th:if="${edu.description != null}" th:text="${edu.description}">
+                        Graduated with honors. Specialized in digital media and interactive design.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certifications Section -->
+            <div class="section" th:if="${!resume.certifications.isEmpty()}">
+                <h2 class="section-title">Certifications</h2>
+                <div class="education-item" th:each="cert : ${resume.certifications}">
+                    <div class="item-title creative-heading" th:text="${cert.name}">Certified UX Designer</div>
+                    <div class="item-subtitle" th:text="${cert.issuingOrganization}">Nielsen Norman Group</div>
+                    <div class="item-date creative-accent" th:if="${cert.issueDate != null}">
+                        <span th:text="${#temporals.format(cert.issueDate, 'MMM yyyy')}">Jun 2021</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

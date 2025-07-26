@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${resume.title} + ' - Resume'">Modern Resume Template</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 12px;
+            background-color: #ffffff;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #4a6bff 0%, #2541b2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+        .resume-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .contact-info {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a6bff;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #4a6bff;
+        }
+        .summary {
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .experience-item, .education-item, .project-item {
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 2px solid #e0e0e0;
+            position: relative;
+        }
+        .experience-item:before, .education-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4a6bff;
+        }
+        .item-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .item-subtitle {
+            color: #4a6bff;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .item-date {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-bottom: 8px;
+        }
+        .item-description {
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skill-item {
+            background-color: #f1f4ff;
+            color: #4a6bff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .certification-item, .language-item, .hobby-item {
+            margin-bottom: 12px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #95a5a6;
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="resume-title" th:text="${resume.title}">Modern Professional Resume</h1>
+            <div class="contact-info" th:if="${resume.user != null}">
+                <span th:text="${resume.user.fullName}">Jane Smith</span> | 
+                <span th:text="${resume.user.email}">jane.smith@example.com</span>
+            </div>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="section" th:if="${resume.summary != null && !resume.summary.isEmpty()}">
+            <h2 class="section-title">Professional Summary</h2>
+            <div class="summary" th:text="${resume.summary}">
+                Forward-thinking software engineer with a strong foundation in modern web technologies and a passion for creating intuitive user experiences.
+            </div>
+        </div>
+        
+        <!-- Experience Section -->
+        <div class="section" th:if="${!resume.experiences.isEmpty()}">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="experience-item" th:each="exp : ${resume.experiences}">
+                <div class="item-title" th:text="${exp.jobTitle}">Lead Frontend Developer</div>
+                <div class="item-subtitle" th:text="${exp.company}">Innovative Tech Solutions</div>
+                <div class="item-date">
+                    <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Mar 2020</span> - 
+                    <span th:if="${exp.currentlyWorking}">Present</span>
+                    <span th:unless="${exp.currentlyWorking}" th:text="${#temporals.format(exp.endDate, 'MMM yyyy')}">Feb 2023</span>
+                </div>
+                <div class="item-description" th:text="${exp.description}">
+                    Spearheaded the development of a modern web application using React and Node.js, resulting in a 40% increase in user engagement and a significant reduction in load times.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Education Section -->
+        <div class="section" th:if="${!resume.educations.isEmpty()}">
+            <h2 class="section-title">Education</h2>
+            <div class="education-item" th:each="edu : ${resume.educations}">
+                <div class="item-title" th:text="${edu.degree}">Master of Computer Science</div>
+                <div class="item-subtitle" th:text="${edu.institution}">Tech University</div>
+                <div class="item-date">
+                    <span th:text="${#temporals.format(edu.startDate, 'yyyy')}">2018</span> - 
+                    <span th:text="${#temporals.format(edu.endDate, 'yyyy')}">2020</span>
+                </div>
+                <div class="item-description" th:if="${edu.description != null}" th:text="${edu.description}">
+                    Specialized in artificial intelligence and machine learning. Thesis on predictive modeling for e-commerce platforms.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Skills Section -->
+        <div class="section" th:if="${!resume.skills.isEmpty()}">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-container">
+                <div class="skill-item" th:each="skill : ${resume.skills}">
+                    <span th:text="${skill.name}">React.js</span>
+                    <span th:if="${skill.level != null}"> - </span>
+                    <span th:if="${skill.level != null}" th:text="${skill.level}">Advanced</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Certifications Section -->
+        <div class="section" th:if="${!resume.certifications.isEmpty()}">
+            <h2 class="section-title">Certifications</h2>
+            <div class="certification-item" th:each="cert : ${resume.certifications}">
+                <div class="item-title" th:text="${cert.name}">Google Cloud Certified - Professional Cloud Architect</div>
+                <div class="item-subtitle" th:text="${cert.issuingOrganization}">Google Cloud</div>
+                <div class="item-date" th:if="${cert.issueDate != null}">
+                    Issued: <span th:text="${#temporals.format(cert.issueDate, 'MMM yyyy')}">Sep 2021</span>
+                    <span th:if="${cert.expiryDate != null}"> - Expires: <span th:text="${#temporals.format(cert.expiryDate, 'MMM yyyy')}">Sep 2024</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Languages Section -->
+        <div class="section" th:if="${!resume.languages.isEmpty()}">
+            <h2 class="section-title">Languages</h2>
+            <div class="language-item" th:each="lang : ${resume.languages}">
+                <span class="item-title" th:text="${lang.name}">English</span> - 
+                <span th:text="${lang.proficiencyLevel}">Fluent</span>
+            </div>
+        </div>
+        
+        <!-- Hobbies Section -->
+        <div class="section" th:if="${!resume.hobbies.isEmpty()}">
+            <h2 class="section-title">Interests</h2>
+            <div class="hobby-item" th:each="hobby : ${resume.hobbies}">
+                <span class="item-title" th:text="${hobby.name}">Digital Art</span>
+                <span th:if="${hobby.description != null}"> - </span>
+                <span th:if="${hobby.description != null}" th:text="${hobby.description}">Creating 3D models and digital illustrations</span>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Generated with Developer Resume Builder | <span th:text="${#temporals.format(#temporals.createNow(), 'dd MMM yyyy')}">01 Jan 2025</span></p>
+        </div>
+    </div>
+</body>
+</html>
