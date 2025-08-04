@@ -102,8 +102,10 @@ Clean, minimalist approach with ample white space and subtle styling for modern 
    ```
 
 2. **Configure Database**
-   - Create a MySQL database
-   - Update `application.properties` with your database credentials
+   - Create a MySQL database named `resume_builderdb` or any name of your choice
+   - Update `src/main/resources/application.properties` with your database credentials:
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/[YOUR_DATABASE_NAME]
 
 3. **Build and Run**
    ```bash
